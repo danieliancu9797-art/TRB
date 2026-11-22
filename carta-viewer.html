@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carta de Porte — Tariblanca Fruit</title>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<style>
+:root{--teal:#159a9c;--dark:#0d6d76;--ink:#1b2a33;--muted:#5b6b74;--line:#b8d8d8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#f4f8f8;font-size:13px;line-height:1.4}
+.page{max-width:1000px;margin:0 auto;background:#fff;min-height:100vh}
+.head{background:linear-gradient(110deg,var(--dark),var(--teal));color:#fff;padding:18px 24px;display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+.head h1{font-size:21px}.badge{background:#fff;color:var(--dark);border-radius:20px;padding:1px 10px;font-weight:900;font-size:15px;margin-right:8px}
+.head p{font-size:11px;opacity:.9;margin-top:6px}.code{text-align:right;font-family:monospace;font-size:17px;font-weight:800;word-break:break-all}
+.code small{display:block;font-family:Arial;font-size:10px;opacity:.85;font-weight:400;margin-bottom:2px}
+.wrap{padding:18px 22px}
+fieldset{border:1.5px solid var(--line);border-radius:8px;margin-bottom:12px;overflow:hidden}
+legend{background:var(--teal);color:#fff;font-weight:700;font-size:12px;padding:5px 12px;border-radius:6px 6px 0 0}
+.kv{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px}
+.kv>div{min-width:0}.lbl{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--dark);font-weight:700}
+.val{font-weight:700;font-size:13px;word-break:break-word}.sub{font-size:11px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:11.5px}th,td{border:1px solid #cfe3e3;padding:5px 7px;text-align:left;vertical-align:top}
+th{background:#eaf6f6;color:var(--dark);font-size:9.5px;text-transform:uppercase}.tot{font-weight:800;color:var(--dark);text-align:right}
+.legal{font-size:11px;color:#444;padding:12px;background:#f7fbfb}
+.foot{border-top:1px solid var(--line);margin-top:8px;padding:12px 22px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:10px;color:var(--muted)}
+.hash{font-family:monospace;word-break:break-all}
+.actions{padding:16px 22px;text-align:center}
+.actions button{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:12px 22px;font-weight:700;cursor:pointer;font-size:14px;margin:4px}
+.actions button.sec{background:#0d6d76}
+.error{padding:50px;text-align:center;color:#a33;font-size:16px}
+@media(max-width:600px){.kv{grid-template-columns:repeat(2,1fr)}.head{flex-direction:column}}
+@media print{body{background:#fff}.actions{display:none}.page{max-width:none}fieldset{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="page" id="page"></div>
+<script>
+(function(){
+  var page=document.getElementById('page');
+  function decode(b64){b64=b64.replace(/-/g,'+').replace(/_/g,'/');while(b64.length%4)b64+='=';return JSON.parse(decodeURIComponent(escape(atob(b64))));}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
+  var raw=location.hash.replace(/^#/,'');
+  if(!raw){page.innerHTML='<div class="error">Sin datos de carta de porte en la dirección.</div>';return;}
+  var d;
+  try{d=decode(raw);}catch(e){page.innerHTML='<div class="error">No se pudo leer el documento: '+esc(e.message)+'</div>';return;}
+  var lineas=d.lineas||[];
+  var totUds=lineas.reduce(function(a,l){return a+(parseFloat(l.cant)||0)},0);
+  var totKg=lineas.reduce(function(a,l){return a+(parseFloat(l.total)||0)},0);
+  var h='';
+  h+='<div class="head"><div><h1><span class="badge">TRB</span>CARTA DE PORTE · Salida de envases y palets</h1><p>'+esc(d.empresa||'TARIBLANCA FRUIT')+' — Documento generado electrónicamente</p></div><div class="code"><small>DOCUMENTO Nº</small>'+esc(d.num||'—')+'<small>FECHA '+esc(d.fecha||'—')+'</small></div></div>';
+  h+='<div class="wrap">';
+  h+='<fieldset><legend>1 · Remitente y destinatario</legend><div class="kv">';
+  h+='<div><div class="lbl">Remitente</div><div class="val">'+esc(d.empresa||'—')+'</div><div class="sub">'+esc(d.empCif||'')+'</div></div>';
+  h+='<div><div class="lbl">Destinatario / Agricultor</div><div class="val">'+esc(d.agricultor||'—')+'</div></div>';
+  h+='<div><div class="lbl">Fecha</div><div class="val">'+esc(d.fecha||'—')+'</div></div>';
+  h+='<div><div class="lbl">Registrado por</div><div class="val">'+esc(d.usuario||'—')+'</div></div>';
+  h+='</div></fieldset>';
+  h+='<fieldset><legend>2 · Medios de transporte y lugares</legend><div class="kv">';
+  h+='<div><div class="lbl">Matrícula vehículo</div><div class="val">'+esc(d.matricula||'—')+'</div></div>';
+  h+='<div><div class="lbl">Matrícula remolque</div><div class="val">'+esc(d.matriculaRemolque||'—')+'</div></div>';
+  h+='<div><div class="lbl">Lugar de carga</div><div class="val">'+esc(d.lugarcarga||'—')+'</div></div>';
+  h+='<div><div class="lbl">Lugar de entrega</div><div class="val">'+esc(d.lugarentrega||'—')+'</div></div>';
+  h+='</div></fieldset>';
+  h+='<fieldset><legend>3 · Mercancías (envases y palets)</legend><table><thead><tr><th>Nº</th><th>Tipo</th><th>Artículo</th><th style="text-align:right">Cantidad (uds)</th><th style="text-align:right">Peso/u (kg)</th><th style="text-align:right">Peso total (kg)</th></tr></thead><tbody>';
+  lineas.forEach(function(l,i){
+    h+='<tr><td>'+(i+1)+'</td><td>'+esc(l.tipo==='palet'?'Palet':'Envase')+'</td><td>'+esc(l.item||'—')+'</td><td style="text-align:right">'+esc(l.cant||0)+'</td><td style="text-align:right">'+esc(l.peso||'0')+'</td><td style="text-align:right"><b>'+esc(l.total||'0.00')+'</b></td></tr>';
+  });
+  h+='<tr><th colspan="3">TOTALES ('+lineas.length+' línea(s))</th><th style="text-align:right">'+totUds+'</th><th></th><th class="tot">'+totKg.toFixed(2)+'</th></tr>';
+  h+='</tbody></table></fieldset>';
+  h+='<fieldset><legend>4 · Instrucciones y observaciones</legend><div class="kv">';
+  h+='<div style="grid-column:span 2"><div class="lbl">Instrucciones del remitente</div><div class="val">'+esc(d.instrucciones||'—')+'</div></div>';
+  h+='<div style="grid-column:span 2"><div class="lbl">Observaciones / reservas</div><div class="val">'+esc(d.obs||'—')+'</div></div>';
+  h+='</div></fieldset>';
+  h+='<fieldset><legend>5 · Condiciones y firma</legend><div class="legal">La mercancía se entrega conforme en cantidad y calidad salvo reclamación en las 24 horas siguientes a la recepción. El presente documento acredita la salida de envases y palets del almacén de '+esc(d.empresa||'TARIBLANCA FRUIT, S.L.')+' y no tiene valor de factura.</div><div class="kv"><div style="grid-column:span 2"><div class="lbl">Firma y sello del remitente</div><div class="val">&nbsp;</div></div><div style="grid-column:span 2"><div class="lbl">Recibí conforme — Destinatario</div><div class="val">&nbsp;</div></div></div></fieldset>';
+  h+='</div>';
+  h+='<div class="foot"><span>TRB · Tariblanca Fruit — Documento generado electrónicamente</span><span>HASH '+esc(d.hash||'')+'</span></div>';
+  h+='<div class="actions"><button onclick="window.print()">🖨 Imprimir</button><button class="sec" id="btn-descargar">⬇ Descargar PDF</button></div>';
+  page.innerHTML=h;
+
+  document.getElementById('btn-descargar').onclick=function(){
+    try{
+      if(typeof jspdf==='undefined'){alert('No se pudo cargar la librería PDF. Usa el botón Imprimir y elige "Guardar como PDF".');return;}
+      var pdf=new jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+      var m=10,y=12;
+      pdf.setFontSize(16);pdf.setTextColor(13,109,118);pdf.text('CARTA DE PORTE - TRB',m,y);y+=7;
+      pdf.setFontSize(9);pdf.setTextColor(40,40,40);
+      pdf.text('Documento: '+(d.num||'')+'   Fecha: '+(d.fecha||''),m,y);y+=6;
+      pdf.text('Remitente: '+(d.empresa||'')+'   CIF: '+(d.empCif||''),m,y);y+=6;
+      pdf.text('Destinatario: '+(d.agricultor||''),m,y);y+=6;
+      pdf.text('Lugar carga: '+(d.lugarcarga||'')+'   Entrega: '+(d.lugarentrega||''),m,y);y+=6;
+      pdf.text('Matricula: '+(d.matricula||'')+'   Remolque: '+(d.matriculaRemolque||''),m,y);y+=8;
+      pdf.setFontSize(10);pdf.setFont(undefined,'bold');pdf.text('Mercancias',m,y);y+=6;
+      pdf.setFontSize(9);pdf.setFont(undefined,'normal');
+      pdf.text('Tipo            Articulo                                  Cant.   Peso/u   Total',m,y);y+=5;
+      lineas.forEach(function(l){
+        pdf.text((l.tipo==='palet'?'Palet':'Envase')+'   '+String(l.item||'').substring(0,38)+'   '+String(l.cant||0)+'   '+String(l.peso||0)+'   '+String(l.total||0),m,y);y+=5;
+        if(y>270){pdf.addPage();y=12;}
+      });
+      y+=3;pdf.setFont(undefined,'bold');pdf.text('TOTALES: '+totUds+' uds / '+totKg.toFixed(2)+' kg',m,y);y+=8;
+      pdf.setFont(undefined,'normal');pdf.setFontSize(8);
+      pdf.text('La mercancia se entrega conforme en cantidad y calidad salvo reclamacion en las 24 horas.',m,y);y+=5;
+      pdf.text('Firma remitente: ____________________   Recibi conforme: ____________________',m,y);y+=5;
+      pdf.text('TARIBLANCA FRUIT - HASH '+(d.hash||''),m,y);
+      pdf.save('Carta-Porte-'+(d.num||'TRB')+'.pdf');
+    }catch(e){alert('Error generando PDF: '+e.message);}
+  };
+})();
+</script>
+</body>
+</html>
