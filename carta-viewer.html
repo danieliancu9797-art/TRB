@@ -1,3 +1,6 @@
+COPIA TODO EL CONTENIDO DE ABAJO (desde <!DOCTYPE> hasta </html>) Y PEGALO EN GITHUB
+================================================================================
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -82,26 +85,99 @@ th{background:#eaf6f6;color:var(--dark);font-size:9.5px;text-transform:uppercase
     try{
       if(typeof jspdf==='undefined'){alert('No se pudo cargar la librería PDF. Usa el botón Imprimir y elige "Guardar como PDF".');return;}
       var pdf=new jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-      var m=10,y=12;
-      pdf.setFontSize(16);pdf.setTextColor(13,109,118);pdf.text('CARTA DE PORTE - TRB',m,y);y+=7;
-      pdf.setFontSize(9);pdf.setTextColor(40,40,40);
-      pdf.text('Documento: '+(d.num||'')+'   Fecha: '+(d.fecha||''),m,y);y+=6;
-      pdf.text('Remitente: '+(d.empresa||'')+'   CIF: '+(d.empCif||''),m,y);y+=6;
-      pdf.text('Destinatario: '+(d.agricultor||''),m,y);y+=6;
-      pdf.text('Lugar carga: '+(d.lugarcarga||'')+'   Entrega: '+(d.lugarentrega||''),m,y);y+=6;
-      pdf.text('Matricula: '+(d.matricula||'')+'   Remolque: '+(d.matriculaRemolque||''),m,y);y+=8;
-      pdf.setFontSize(10);pdf.setFont(undefined,'bold');pdf.text('Mercancias',m,y);y+=6;
-      pdf.setFontSize(9);pdf.setFont(undefined,'normal');
-      pdf.text('Tipo            Articulo                                  Cant.   Peso/u   Total',m,y);y+=5;
+      var W=210, M=12, CW=W-M*2;
+      function seccion(num,titulo,yy){
+        pdf.setFillColor(21,154,156);pdf.rect(M,yy,CW,8,'F');
+        pdf.setTextColor(255,255,255);pdf.setFont(undefined,'bold');pdf.setFontSize(11);
+        pdf.text(num+' · '+titulo,M+3,yy+5.5);
+        return yy+12;
+      }
+      function campo(lbl,val,yy,xx,ww){
+        pdf.setFont(undefined,'normal');pdf.setFontSize(8);pdf.setTextColor(110,120,125);
+        pdf.text(lbl,xx,yy);
+        pdf.setFont(undefined,'bold');pdf.setFontSize(11);pdf.setTextColor(20,35,42);
+        pdf.text(String(val||'—').substring(0,42),xx,yy+5);
+      }
+      // Cabecera
+      pdf.setFillColor(13,109,118);pdf.rect(0,0,W,34,'F');
+      pdf.setTextColor(255,255,255);pdf.setFont(undefined,'bold');pdf.setFontSize(20);
+      pdf.text('CARTA DE PORTE',M,15);
+      pdf.setFontSize(11);pdf.text('TRB',M+47,15);
+      pdf.setFont(undefined,'normal');pdf.setFontSize(9);
+      pdf.text('Movimiento de envases y palets · Salida de almacen',M,22);
+      pdf.text('TARIBLANCA FRUIT',M,28);
+      pdf.setFont(undefined,'bold');pdf.setFontSize(12);
+      pdf.text(d.num||'—',W-M,14,{align:'right'});
+      pdf.setFont(undefined,'normal');pdf.setFontSize(9);pdf.text(d.fecha||'',W-M,21,{align:'right'});
+      var y=42;
+      // 1 Remitente / destinatario
+      y=seccion('1','Remitente y destinatario',y);
+      pdf.setDrawColor(200,220,220);pdf.rect(M,y-4,CW,22);
+      campo('REMITENTE',d.empresa||'',y+3,M+3,80);
+      campo('CIF',d.empCif||'',y+13,M+3,80);
+      pdf.line(M+90,y-4,M+90,y+18);
+      campo('DESTINATARIO / AGRICULTOR',d.agricultor||'',y+3,M+93,80);
+      campo('REGISTRADO POR',d.usuario||'',y+13,M+93,80);
+      y+=24;
+      // 2 Transporte
+      y=seccion('2','Medios de transporte y lugares',y);
+      pdf.setDrawColor(200,220,220);pdf.rect(M,y-4,CW,22);
+      campo('MATRICULA VEHICULO',d.matricula||'',y+3,M+3,90);
+      campo('MATRICULA REMOLQUE',d.matriculaRemolque||'',y+3,M+105,90);
+      campo('LUGAR DE CARGA',d.lugarcarga||'',y+13,M+3,90);
+      campo('LUGAR DE ENTREGA',d.lugarentrega||'',y+13,M+105,90);
+      y+=24;
+      // 3 Mercancias
+      y=seccion('3','Mercancias (envases y palets)',y);
+      var colX=[M+3,M+30,M+70,M+120,M+150,M+175];
+      pdf.setFillColor(234,246,246);pdf.setDrawColor(184,216,216);
+      pdf.rect(M,y-4,CW,8,'FD');
+      pdf.setFont(undefined,'bold');pdf.setFontSize(8);pdf.setTextColor(13,109,118);
+      pdf.text('TIPO',colX[0],y+1.5);pdf.text('ARTICULO',colX[1],y+1.5);
+      pdf.text('CANT.',colX[2],y+1.5);pdf.text('PESO/U',colX[3],y+1.5);pdf.text('TOTAL KG',colX[4],y+1.5);
+      y+=8;
       lineas.forEach(function(l){
-        pdf.text((l.tipo==='palet'?'Palet':'Envase')+'   '+String(l.item||'').substring(0,38)+'   '+String(l.cant||0)+'   '+String(l.peso||0)+'   '+String(l.total||0),m,y);y+=5;
-        if(y>270){pdf.addPage();y=12;}
+        pdf.setDrawColor(220,235,235);pdf.line(M,y-2,M+CW,y-2);
+        pdf.setFont(undefined,'normal');pdf.setFontSize(9);pdf.setTextColor(30,42,50);
+        pdf.text(l.tipo==='palet'?'Palet':'Envase',colX[0],y+2);
+        pdf.text(String(l.item||'').substring(0,26),colX[1],y+2);
+        pdf.text(String(l.cant||0),colX[2],y+2);
+        pdf.text(String(l.peso||'0'),colX[3],y+2);
+        pdf.setFont(undefined,'bold');pdf.text(String(l.total||'0.00'),colX[4],y+2);
+        y+=7;
+        if(y>245){pdf.addPage();y=16;}
       });
-      y+=3;pdf.setFont(undefined,'bold');pdf.text('TOTALES: '+totUds+' uds / '+totKg.toFixed(2)+' kg',m,y);y+=8;
-      pdf.setFont(undefined,'normal');pdf.setFontSize(8);
-      pdf.text('La mercancia se entrega conforme en cantidad y calidad salvo reclamacion en las 24 horas.',m,y);y+=5;
-      pdf.text('Firma remitente: ____________________   Recibi conforme: ____________________',m,y);y+=5;
-      pdf.text('TARIBLANCA FRUIT - HASH '+(d.hash||''),m,y);
+      pdf.setDrawColor(184,216,216);pdf.line(M,y-2,M+CW,y-2);
+      pdf.setFillColor(234,246,246);pdf.rect(M,y-2,CW,8,'F');
+      pdf.setFont(undefined,'bold');pdf.setFontSize(10);pdf.setTextColor(13,109,118);
+      pdf.text('TOTALES ('+lineas.length+' linea(s))',M+3,y+3.5);
+      pdf.text(String(totUds)+' uds',M+70,y+3.5);
+      pdf.text(totKg.toFixed(2)+' kg',M+150,y+3.5);
+      y+=12;
+      // 4 Instrucciones
+      y=seccion('4','Instrucciones y observaciones',y);
+      pdf.setDrawColor(200,220,220);pdf.rect(M,y-4,CW,16);
+      pdf.setFont(undefined,'normal');pdf.setFontSize(9);pdf.setTextColor(30,42,50);
+      pdf.text('Instrucciones: '+String(d.instrucciones||'—').substring(0,95),M+3,y+2);
+      pdf.text('Observaciones: '+String(d.obs||'—').substring(0,95),M+3,y+8);
+      y+=18;
+      // 5 Condiciones y firma
+      y=seccion('5','Condiciones y firma',y);
+      pdf.setFont(undefined,'normal');pdf.setFontSize(8);pdf.setTextColor(80,90,95);
+      pdf.text('La mercancia se entrega conforme en cantidad y calidad salvo reclamacion en las 24 horas',M,y);
+      pdf.text('siguientes a la recepcion.El presente documento acredita la salida de envases y palets',M,y+4);
+      pdf.text('del almacen de TARIBLANCA FRUIT y no tiene valor de factura.',M,y+8);
+      y+=16;
+      pdf.setDrawColor(120,130,135);
+      pdf.line(M,y,M+60,y);pdf.line(M+75,y,M+135,y);pdf.line(M+150,y,M+CW,y);
+      pdf.setFont(undefined,'normal');pdf.setFontSize(8);pdf.setTextColor(60,70,75);
+      pdf.text('Firma y sello del remitente',M,y+4);
+      pdf.text('Firma y sello del transportista',M+75,y+4);
+      pdf.text('Recibi conforme - Destinatario',M+150,y+4);
+      // Pie
+      pdf.setFont(undefined,'normal');pdf.setFontSize(7);pdf.setTextColor(150,160,165);
+      pdf.text('TARIBLANCA FRUIT · TRB — Documento generado electronicamente',M,285);
+      pdf.text('HASH '+(d.hash||''),M,289);
       pdf.save('Carta-Porte-'+(d.num||'TRB')+'.pdf');
     }catch(e){alert('Error generando PDF: '+e.message);}
   };
