@@ -3,34 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CMR — Tariblanca Fruit</title>
+<title>DeCA — Documento electrónico de Control Administrativo</title>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 <style>
-:root{--teal:#159a9c;--dark:#0d6d76;--ink:#1b2a33;--muted:#5b6b74;--line:#b8d8d8}
+:root{--teal:#159a9c;--teal-dark:#0d6d76;--ink:#1b2a33;--muted:#5b6b74;--line:#b8d8d8;--bg:#f4f8f8}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#f4f8f8;font-size:13px;line-height:1.4}
+body{font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg);font-size:13px;line-height:1.35}
 .page{max-width:1000px;margin:0 auto;background:#fff;min-height:100vh}
-.head{background:linear-gradient(110deg,var(--dark),var(--teal));color:#fff;padding:18px 24px;display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
-.head h1{font-size:20px}.badge{background:#fff;color:var(--dark);border-radius:20px;padding:1px 10px;font-weight:900;font-size:15px;margin-right:8px}
-.head p{font-size:11px;opacity:.9;margin-top:6px}.code{text-align:right;font-family:monospace;font-size:16px;font-weight:800;word-break:break-all}
-.code small{display:block;font-family:Arial;font-size:10px;opacity:.85;font-weight:400;margin-bottom:2px}
-.wrap{padding:18px 22px}
-fieldset{border:1.5px solid var(--line);border-radius:8px;margin-bottom:12px;overflow:hidden}
-legend{background:var(--teal);color:#fff;font-weight:700;font-size:12px;padding:5px 12px;border-radius:6px 6px 0 0}
-.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px}
-.kv>div{min-width:0}.lbl{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--dark);font-weight:700}
-.val{font-weight:700;font-size:13px;word-break:break-word}.sub{font-size:11px;color:var(--muted)}
-table{width:100%;border-collapse:collapse;font-size:11.5px}th,td{border:1px solid #cfe3e3;padding:5px 7px;text-align:left;vertical-align:top}
-th{background:#eaf6f6;color:var(--dark);font-size:9.5px;text-transform:uppercase}.tot{font-weight:800;color:var(--dark)}
-.legal{font-size:11px;color:#444;padding:12px;background:#f7fbfb}
-.foot{border-top:1px solid var(--line);margin-top:8px;padding:12px 22px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:10px;color:var(--muted)}
-.hash{font-family:monospace;word-break:break-all}
-.actions{padding:16px 22px;text-align:center}
-.actions button{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:12px 22px;font-weight:700;cursor:pointer;font-size:14px;margin:4px}
-.actions button.sec{background:#0d6d76}
-.error{padding:50px;text-align:center;color:#a33;font-size:16px}
-@media(max-width:600px){.kv{grid-template-columns:repeat(2,1fr)}.head{flex-direction:column}}
-@media print{body{background:#fff}.actions{display:none}.page{max-width:none}fieldset{break-inside:avoid}}
+.cmr-head{background:linear-gradient(110deg,var(--teal-dark),var(--teal));color:#fff;padding:18px 24px;display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+.cmr-head h1{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.cmr-head .badge{display:inline-block;background:#fff;color:var(--teal-dark);border-radius:20px;padding:1px 10px;font-weight:800;font-size:18px;vertical-align:middle;margin-left:6px}
+.cmr-head p{font-size:11px;opacity:.92;margin-top:8px;max-width:780px}
+.cmr-head .id{font-size:11px;text-align:right;white-space:nowrap;opacity:.95}
+.cmr-head .id b{font-size:15px;display:block}
+.wrap{padding:16px 20px}
+fieldset{border:1.5px solid var(--line);border-radius:8px;margin-bottom:10px;overflow:hidden}
+legend{background:var(--teal);color:#fff;font-weight:700;font-size:12px;padding:5px 12px;border-radius:6px 6px 0 0;letter-spacing:.02em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.grid2>div{padding:10px 12px}
+.grid2>div+div{border-left:1.5px solid var(--line)}
+.box{padding:10px 12px}
+.lbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--teal-dark);font-weight:700;margin-bottom:3px}
+.val{font-weight:700;font-size:13px}
+.sub{color:var(--muted);font-size:11.5px;white-space:pre-line}
+.cols{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:8px 12px}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+th,td{border:1px solid #cfe3e3;padding:5px 7px;text-align:left;vertical-align:top}
+th{background:#eaf6f6;color:var(--teal-dark);font-size:10px;text-transform:uppercase}
+.merc td{font-size:11.5px}
+.total{font-weight:800;color:var(--teal-dark)}
+.legal{font-size:10.5px;color:#33454e;white-space:pre-line}
+.foot{padding:10px 12px;display:flex;gap:18px;flex-wrap:wrap;font-size:11px;border-top:1px solid var(--line);color:var(--muted)}
+.foot b{color:var(--ink)}
+.hash{font-family:monospace;font-size:11px;word-break:break-all}
+.actions{padding:12px 20px;display:flex;gap:10px;align-items:center}
+button{background:var(--teal);color:#fff;border:none;border-radius:6px;padding:10px 18px;font-weight:700;font-size:13px;cursor:pointer}
+button:hover{background:var(--teal-dark)}
+button.sec{background:var(--teal-dark)}
+.error{padding:40px;text-align:center;color:#a33;font-size:16px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}.cols{grid-template-columns:repeat(2,1fr)}}
+@media print{body{background:#fff}.actions{display:none}.page{max-width:none}@page{size:A4;margin:1cm}fieldset{break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -40,80 +52,88 @@ th{background:#eaf6f6;color:var(--dark);font-size:9.5px;text-transform:uppercase
   var page=document.getElementById('page');
   function decode(b64){b64=b64.replace(/-/g,'+').replace(/_/g,'/');while(b64.length%4)b64+='=';return JSON.parse(decodeURIComponent(escape(atob(b64))));}
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
+  function hashShort(x){return x?'HASH '+String(x).slice(0,8):''}
   var raw=location.hash.replace(/^#/,'');
   if(!raw){page.innerHTML='<div class="error">Sin datos de CMR en la dirección.</div>';return;}
   var d;
   try{d=decode(raw);}catch(e){page.innerHTML='<div class="error">No se pudo leer el documento: '+esc(e.message)+'</div>';return;}
   var lineas=d.lineas||[];
   if(!lineas.length&&d.mercancia)lineas=[{bultos:d.totalBultos||0,embalaje:'GENERAL',producto:d.mercancia,codigo:'—',peso:d.totalPeso||'0',volumen:'—'}];
-  var totB=lineas.reduce(function(a,l){return a+(parseFloat(l.bultos)||0)},0);
-  var totKg=lineas.reduce(function(a,l){return a+(parseFloat(l.peso)||0)},0);
+  var totalB=lineas.reduce(function(a,l){return a+(parseFloat(l.bultos)||0)},0);
+  var totalKg=lineas.reduce(function(a,l){return a+(parseFloat(l.peso)||0)},0);
   var h='';
-  h+='<div class="head"><div><h1><span class="badge">TRB</span>C.M.R · Carta de porte internacional</h1><p>'+esc(d.empresa||'TARIBLANCA FRUIT')+' — '+esc(d.tipo||'Salida')+' — Documento generado electrónicamente</p></div><div class="code"><small>DOCUMENTO Nº</small>'+esc(d.num||'—')+'<small>FECHA '+esc(d.fecha||'—')+'</small></div></div>';
+  h+='<div class="cmr-head"><div><h1>Documento electrónico de Control Administrativo <span class="badge">DeCA</span></h1><p>Este documento cumple con la Orden FOM 2861/2012, por la que se regula el documento de control administrativo. Generado 100% digitalmente a partir de datos estructurados.</p></div><div class="id">DOCUMENTO<b>'+esc(d.num||'—')+'</b>'+esc(hashShort(d.hash))+'</div></div>';
   h+='<div class="wrap">';
-  h+='<fieldset><legend>1 · Remitente y destinatario</legend><div class="kv">';
-  h+='<div><div class="lbl">1 · Remitente</div><div class="val">'+esc(d.empresa||'—')+'</div><div class="sub">'+esc(d.empCif||'')+'</div></div>';
-  h+='<div><div class="lbl">2 · Destinatario</div><div class="val">'+esc(d.cliente||'—')+'</div><div class="sub">'+esc(d.cliCif||'')+'</div></div>';
-  h+='<div><div class="lbl">16 · Porteador</div><div class="val">'+esc(d.transporte||'—')+'</div></div>';
-  h+='<div><div class="lbl">3 · Lugar de entrega</div><div class="val">'+esc(d.lugarentrega||'—')+'</div></div>';
-  h+='<div><div class="lbl">4 · Lugar y fecha de carga</div><div class="val">'+esc(d.lugarcarga||'—')+'</div><div class="sub">'+esc(d.fecha||'')+'</div></div>';
-  h+='<div><div class="lbl">Registrado por</div><div class="val">'+esc(d.usuario||'—')+'</div></div>';
-  h+='</div></fieldset>';
-  h+='<fieldset><legend>2 · Transporte y matrículas</legend><div class="kv">';
-  h+='<div><div class="lbl">17 · Matrícula vehículo</div><div class="val">'+esc(d.matricula||'—')+'</div></div>';
-  h+='<div><div class="lbl">17 Bis · Remolque</div><div class="val">'+esc(d.matriculaRemolque||'—')+'</div></div>';
+  h+='<fieldset><legend>1 · Remitente &nbsp;·&nbsp; 2 · Destinatario &nbsp;·&nbsp; 16 · Porteador (art. 4, 5, 6)</legend><div class="grid2">';
+  h+='<div><div class="lbl">1 · Remitente</div><div class="val">'+esc(d.empresa||'—')+'</div><div class="sub">CIF/NIF: '+esc(d.empCif||'—')+'\nLugar de carga: '+esc(d.lugarcarga||'—')+'</div></div>';
+  h+='<div><div class="lbl">2 · Destinatario</div><div class="val">'+esc(d.cliente||'—')+'</div><div class="sub">CIF/NIF: '+esc(d.cliCif||'—')+'\nLugar de entrega: '+esc(d.lugarentrega||'—')+'</div></div>';
+  h+='</div><div class="box" style="border-top:1.5px solid var(--line)"><div class="lbl">16 · Porteador / Transportista</div><div class="val">'+esc(d.transporte||'—')+'</div></div></fieldset>';
+  h+='<fieldset><legend>17 · Medios de transporte (matrículas y remolques)</legend><div class="cols">';
+  h+='<div><div class="lbl">Vehículo</div><div class="val">'+esc(d.matricula||'—')+'</div></div>';
+  h+='<div><div class="lbl">Remolque 1</div><div class="val">'+esc(d.matriculaRemolque||'—')+'</div></div>';
+  h+='<div><div class="lbl">Remolque 2</div><div class="val">'+esc(d.remolque2||'—')+'</div></div>';
   h+='<div><div class="lbl">Distancia / Km</div><div class="val">'+esc(d.distancia||'—')+'</div></div>';
+  h+='<div><div class="lbl">Conductor</div><div class="val">'+esc(d.conductor||'—')+'</div></div>';
   h+='</div></fieldset>';
-  h+='<fieldset><legend>3 · Mercancía (casillas 6-12)</legend><table><thead><tr><th>6 · Marcas</th><th>7 · Bultos</th><th>8 · Embalaje</th><th>9 · Naturaleza</th><th>10 · Código</th><th>11 · Peso bruto</th><th>12 · Volumen</th></tr></thead><tbody>';
+  h+='<fieldset><legend>3 · Mercancía (arts. 6.c, 6.d, 6.f) · casillas 6 a 12</legend><table class="merc"><thead><tr><th>Marcas y números</th><th>Nº bultos</th><th>Embalaje</th><th>Naturaleza</th><th>Código</th><th>Peso bruto (kg)</th><th>Volumen</th></tr></thead><tbody>';
   lineas.forEach(function(l){
-    h+='<tr><td>'+esc(l.marcas||'—')+'</td><td style="text-align:center">'+esc(l.bultos||0)+'</td><td>'+esc(l.embalaje||'—')+'</td><td><b>'+esc(l.producto||'—')+'</b>'+(l.traz?'<br><span style="color:#555;font-size:9px">'+esc(l.traz)+'</span>':'')+'</td><td>'+esc(l.codigo||'—')+'</td><td style="text-align:right"><b>'+esc(l.peso||'0')+'</b></td><td>'+esc(l.volumen||'—')+'</td></tr>';
+    h+='<tr><td>'+esc(l.marcas||'GENERAL')+'</td><td style="text-align:center">'+esc(l.bultos||0)+'</td><td>'+esc(l.embalaje||'—')+'</td><td><b>'+esc(l.producto||'—')+'</b>'+(l.traz?'<br><span style="color:#5b6b74;font-size:10px">'+esc(l.traz)+'</span>':'')+'</td><td>'+esc(l.codigo||'—')+'</td><td class="total">'+esc(l.peso||'0')+' kg</td><td>'+esc(l.volumen||'—')+'</td></tr>';
   });
-  h+='<tr><th colspan="1">TOTALES</th><th style="text-align:center">'+totB+'</th><th colspan="3"></th><th class="tot" style="text-align:right">'+totKg.toFixed(2)+' kg</th><th></th></tr>';
+  if(!lineas.length)h+='<tr><td colspan="7">—</td></tr>';
+  h+='<tr><th colspan="1">TOTALES ('+lineas.length+' línea(s))</th><th style="text-align:center">'+totalB+'</th><th colspan="3"></th><th>'+totalKg.toFixed(2)+' kg</th><th></th></tr>';
   h+='</tbody></table></fieldset>';
-  h+='<fieldset><legend>4 · Instrucciones, pago y observaciones</legend><div class="kv">';
-  h+='<div style="grid-column:span 2"><div class="lbl">13 · Instrucciones del remitente</div><div class="val">'+esc(d.instrucciones||'—')+'</div></div>';
-  h+='<div><div class="lbl">14 · Forma de pago</div><div class="val">'+esc(d.pago||'—')+'</div></div>';
-  h+='<div style="grid-column:span 2"><div class="lbl">18 · Reservas y observaciones</div><div class="val">'+esc(d.observaciones||'—')+'</div></div>';
-  h+='<div><div class="lbl">5 · Documentos anexos</div><div class="val">'+esc(d.documentos||'—')+'</div></div>';
+  h+='<fieldset><legend>4 · Instrucciones, pago y observaciones (arts. 13, 14, 18)</legend><div class="box">';
+  h+='<div class="lbl">13 · Instrucciones del remitente</div><div class="sub">'+esc(d.instrucciones||'—')+'</div>';
+  h+='<div class="lbl" style="margin-top:6px">14 · Forma de pago</div><div class="sub">'+esc(d.pago||'—')+'</div>';
+  h+='<div class="lbl" style="margin-top:6px">18 · Reservas y observaciones del porteador</div><div class="sub">'+esc(d.observaciones||'—')+'</div>';
+  h+='<div class="lbl" style="margin-top:6px">5 · Documentos anexos</div><div class="sub">'+esc(d.documentos||'—')+'</div>';
   h+='</div></fieldset>';
-  h+='<fieldset><legend>5 · Estipulaciones y firma</legend><div class="legal">La duración de este transporte estará sujeta a las normas establecidas en cada país en el acuerdo europeo sobre las condiciones de trabajo (Acuerdo A.E.T.R.).<br>La mercancía se entrega conforme en cantidad y calidad salvo reclamación en las 24 horas siguientes a la recepción.</div><div class="kv"><div style="grid-column:span 1"><div class="lbl">21 · Lugar y fecha de emisión</div><div class="val">'+esc(d.lugarEmision||d.empresa||'')+'</div></div><div style="grid-column:span 2"><div class="lbl">Firmas (casillas 22, 23, 24)</div><div class="val">_________________________ &nbsp; _________________________ &nbsp; _________________________</div></div></div></fieldset>';
+  h+='<fieldset><legend>5 · Aclaraciones y condiciones</legend><div class="box legal">La duración de este transporte estará sujeta a las normas establecidas en cada país en el acuerdo europeo sobre las condiciones de trabajo (Acuerdo A.E.T.R.).\nLa mercancía se entrega conforme en cantidad y calidad salvo reclamación en las 24 horas siguientes a la recepción.\nEl presente documento acredita la salida de mercancía y no tiene valor de factura.\nLos datos de las casillas 1 a 5, 13 y 22 son responsabilidad del Remitente.\nLos datos de las casillas 16 a 18 y 23 son responsabilidad del Porteador.</div></fieldset>';
+  h+='<fieldset><legend>Trazabilidad y emisión</legend><div class="foot" style="border:none">';
+  h+='<div><div class="lbl">Tipo de salida</div><b>'+esc(d.tipo||'Salida')+'</b></div>';
+  h+='<div><div class="lbl">Fecha del CMR</div><b>'+esc(d.fecha||'—')+'</b></div>';
+  h+='<div><div class="lbl">Registrado por</div><b>'+esc(d.usuario||'—')+'</b></div>';
+  h+='<div><div class="lbl">Lugar de emisión</div><b>'+esc(d.lugarEmision||d.empresa||'—')+'</b></div>';
+  h+='</div><div class="box"><div class="lbl">Hash de integridad (versión 1)</div><div class="hash">'+esc(d.hash||'—')+'</div></div></fieldset>';
   h+='</div>';
-  h+='<div class="foot"><span>TRB · Tariblanca Fruit — Carta de porte internacional (CMR)</span><span>HASH '+esc(d.hash||'')+'</span></div>';
-  h+='<div class="actions"><button onclick="window.print()">🖨 Imprimir</button><button class="sec" id="btn-descargar">⬇ Descargar PDF</button></div>';
   page.innerHTML=h;
-
-  document.getElementById('btn-descargar').onclick=function(){
+  var actions=document.createElement('div');
+  actions.className='actions';
+  actions.innerHTML='<button id="dl">⬇ Descargar PDF</button><button class="sec" id="pr">🖨 Imprimir</button><span style="font-size:11px;color:#5b6b74">Elige «Guardar como PDF» en la ventana de impresión.</span>';
+  document.body.appendChild(actions);
+  document.getElementById('pr').onclick=function(){window.print()};
+  document.getElementById('dl').onclick=function(){
     try{
-      if(typeof jspdf==='undefined'){alert('No se pudo cargar la librería PDF. Usa el botón Imprimir y elige "Guardar como PDF".');return;}
+      if(typeof jspdf==='undefined'){window.print();return;}
       var pdf=new jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
       var W=210,M=12,CW=W-M*2;
-      function seccion(num,titulo,yy){pdf.setFillColor(21,154,156);pdf.rect(M,yy,CW,8,'F');pdf.setTextColor(255,255,255);pdf.setFont(undefined,'bold');pdf.setFontSize(11);pdf.text(num+' · '+titulo,M+3,yy+5.5);return yy+12;}
+      function seccion(titulo,yy){pdf.setFillColor(21,154,156);pdf.rect(M,yy,CW,8,'F');pdf.setTextColor(255,255,255);pdf.setFont(undefined,'bold');pdf.setFontSize(11);pdf.text(titulo,M+3,yy+5.5);return yy+12;}
       function campo(lbl,val,yy,xx){pdf.setFont(undefined,'normal');pdf.setFontSize(8);pdf.setTextColor(110,120,125);pdf.text(lbl,xx,yy);pdf.setFont(undefined,'bold');pdf.setFontSize(11);pdf.setTextColor(20,35,42);pdf.text(String(val||'—').substring(0,40),xx,yy+5);}
       pdf.setFillColor(13,109,118);pdf.rect(0,0,W,34,'F');
-      pdf.setTextColor(255,255,255);pdf.setFont(undefined,'bold');pdf.setFontSize(20);pdf.text('C.M.R',M,15);
-      pdf.setFontSize(11);pdf.text('TRB',M+30,15);
-      pdf.setFont(undefined,'normal');pdf.setFontSize(9);pdf.text('Carta de porte internacional · Tariblanca Fruit',M,22);
-      pdf.text(esc(d.tipo||'Salida'),M,28);
+      pdf.setTextColor(255,255,255);pdf.setFont(undefined,'bold');pdf.setFontSize(20);pdf.text('CARTA DE PORTE — C.M.R',M,15);
+      pdf.setFontSize(11);pdf.text('TRB',M+82,15);
+      pdf.setFont(undefined,'normal');pdf.setFontSize(9);pdf.text('Contrato de Transporte Internacional de Mercancías por Carretera',M,22);
+      pdf.text(d.empresa||'TARIBLANCA FRUIT',M,28);
       pdf.setFont(undefined,'bold');pdf.setFontSize(12);pdf.text(d.num||'—',W-M,14,{align:'right'});
       pdf.setFont(undefined,'normal');pdf.setFontSize(9);pdf.text(d.fecha||'',W-M,21,{align:'right'});
       var y=42;
-      y=seccion('1','Remitente y destinatario',y);
+      y=seccion('1 · Remitente · 2 · Destinatario · 16 · Porteador',y);
       pdf.setDrawColor(200,220,220);pdf.rect(M,y-4,CW,22);
-      campo('1 · REMITENTE',d.empresa||'',y+3,M+3);
+      campo('REMITENTE',d.empresa||'',y+3,M+3);
       campo('CIF',d.empCif||'',y+13,M+3);
       pdf.line(M+95,y-4,M+95,y+18);
-      campo('2 · DESTINATARIO',d.cliente||'',y+3,M+98);
+      campo('DESTINATARIO',d.cliente||'',y+3,M+98);
       campo('CIF',d.cliCif||'',y+13,M+98);
       y+=24;
-      y=seccion('2','Transporte y lugares',y);
+      y=seccion('17 · Transporte y lugares',y);
       pdf.setDrawColor(200,220,220);pdf.rect(M,y-4,CW,22);
-      campo('16 · PORTEADOR',d.transporte||'',y+3,M+3);
-      campo('3 · LUGAR ENTREGA',d.lugarentrega||'',y+3,M+105);
-      campo('4 · LUGAR CARGA',d.lugarcarga||'',y+13,M+3);
-      campo('17 · MATRICULA',d.matricula||'',y+13,M+105);
+      campo('PORTEADOR',d.transporte||'',y+3,M+3);
+      campo('LUGAR ENTREGA',d.lugarentrega||'',y+3,M+105);
+      campo('LUGAR CARGA',d.lugarcarga||'',y+13,M+3);
+      campo('MATRICULA',d.matricula||'',y+13,M+105);
       y+=24;
-      y=seccion('3','Mercancia (casillas 6-12)',y);
-      var colX=[M+3,M+32,M+72,M+110,M+150,M+178];
+      y=seccion('3 · Mercancía (casillas 6-12)',y);
+      var colX=[M+3,M+30,M+65,M+105,M+140,M+170];
       pdf.setFillColor(234,246,246);pdf.setDrawColor(184,216,216);pdf.rect(M,y-4,CW,8,'FD');
       pdf.setFont(undefined,'bold');pdf.setFontSize(8);pdf.setTextColor(13,109,118);
       pdf.text('BULTOS',colX[0],y+1.5);pdf.text('EMBALAJE',colX[1],y+1.5);pdf.text('NATURALEZA',colX[2],y+1.5);pdf.text('CODIGO',colX[3],y+1.5);pdf.text('PESO KG',colX[4],y+1.5);
@@ -131,20 +151,20 @@ th{background:#eaf6f6;color:var(--dark);font-size:9.5px;text-transform:uppercase
       });
       pdf.setFillColor(234,246,246);pdf.rect(M,y-2,CW,8,'F');
       pdf.setFont(undefined,'bold');pdf.setFontSize(10);pdf.setTextColor(13,109,118);
-      pdf.text('TOTALES ('+lineas.length+' lineas)',M+3,y+3.5);
-      pdf.text(totB+' bultos',M+90,y+3.5);
-      pdf.text(totKg.toFixed(2)+' kg',M+150,y+3.5);
+      pdf.text('TOTALES ('+lineas.length+' líneas)',M+3,y+3.5);
+      pdf.text(totalB+' bultos',M+90,y+3.5);
+      pdf.text(totalKg.toFixed(2)+' kg',M+150,y+3.5);
       y+=12;
-      y=seccion('4','Instrucciones y pago',y);
+      y=seccion('4 · Instrucciones y pago',y);
       pdf.setDrawColor(200,220,220);pdf.rect(M,y-4,CW,16);
       pdf.setFont(undefined,'normal');pdf.setFontSize(9);pdf.setTextColor(30,42,50);
       pdf.text('13 · Instrucciones: '+String(d.instrucciones||'—').substring(0,90),M+3,y+2);
       pdf.text('14 · Pago: '+String(d.pago||'—').substring(0,40)+'   18 · Obs: '+String(d.observaciones||'—').substring(0,45),M+3,y+8);
       y+=18;
-      y=seccion('5','Condiciones y firma',y);
+      y=seccion('5 · Condiciones y firma',y);
       pdf.setFont(undefined,'normal');pdf.setFontSize(8);pdf.setTextColor(80,90,95);
-      pdf.text('La mercancia se entrega conforme en cantidad y calidad salvo reclamacion en las 24 horas.',M,y);
-      pdf.text('El presente documento es un CMR segun el Convenio de Transporte Internacional de Mercancias.',M,y+4);
+      pdf.text('La mercancía se entrega conforme en cantidad y calidad salvo reclamación en las 24 horas.',M,y);
+      pdf.text('El presente documento es un CMR según el Convenio de Transporte Internacional de Mercancías.',M,y+4);
       y+=12;
       pdf.setDrawColor(120,130,135);
       pdf.line(M,y,M+58,y);pdf.line(M+76,y,M+134,y);pdf.line(M+152,y,M+CW,y);
