@@ -45,6 +45,7 @@ th{background:#eaf6f6;color:var(--dark);font-size:9.5px;text-transform:uppercase
   var d;
   try{d=decode(raw);}catch(e){page.innerHTML='<div class="error">No se pudo leer el documento: '+esc(e.message)+'</div>';return;}
   var lineas=d.lineas||[];
+  if(!lineas.length&&d.mercancia)lineas=[{bultos:d.totalBultos||0,embalaje:'GENERAL',producto:d.mercancia,codigo:'—',peso:d.totalPeso||'0',volumen:'—'}];
   var totB=lineas.reduce(function(a,l){return a+(parseFloat(l.bultos)||0)},0);
   var totKg=lineas.reduce(function(a,l){return a+(parseFloat(l.peso)||0)},0);
   var h='';
